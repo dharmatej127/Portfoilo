@@ -1145,21 +1145,23 @@ footer span{color:var(--gold);}
         <span class="stack-pill">Streamlit</span>
         <span class="stack-pill">Spotify API</span>
       </div>
-      <a href="https://github.com/dharmatej127" class="project-link" target="_blank">View on GitHub →</a>
+      <a href="https://github.com/dharmatej127/AI-Playlist-Generator" class="project-link" target="_blank">View on GitHub →</a><br>
+      <a href="https://ai-playlist-generator-fbccs9t8ixcgurpnkbiesq.streamlit.app/" class="project-link" target="_blank">View on WebSite→</a>
     </div>
     <div class="project-card reveal from-bottom">
       <div class="project-period">Apr 2024 – May 2024</div>
       <div class="project-num">02 /</div>
       <div class="project-type">Web Development</div>
-      <div class="project-title">Social Media Web App</div>
-      <div class="project-desc">A full-featured social media web application with responsive frontend design and backend integration. Built with a focus on user experience and scalable architecture using modern web technologies.</div>
+      <div class="project-title">CRUD Architect — AI CRUD Generator</div>
+      <div class="project-desc">A CRUD generation system for creating backend APIs and databases with an AI-based approach to dynamically generating CRUD structures using user input commands, including a live, visual representation of the generated CRUD structures through a responsive front-end interface.</div>
       <div class="project-stack">
         <span class="stack-pill">HTML/CSS</span>
         <span class="stack-pill">JavaScript</span>
         <span class="stack-pill">Python</span>
         <span class="stack-pill">MySQL</span>
       </div>
-      <a href="https://github.com/dharmatej127" class="project-link" target="_blank">View on GitHub →</a>
+      <a href="https://github.com/dharmatej127/crud_generator_Ai_assisted_coding_project" class="project-link" target="_blank">View on GitHub →</a><br>
+      <a href="https://prompt-crud-generator.onrender.com/index.html" class="project-link" target="_blank">View on WebSite→</a>
     </div>
     <div class="project-card reveal from-bottom">
       <div class="project-period">Jul 2024 – Sep 2024</div>
@@ -1174,7 +1176,7 @@ footer span{color:var(--gold);}
         <span class="stack-pill">Ridge/Lasso</span>
         <span class="stack-pill">Python</span>
       </div>
-      <a href="https://github.com/dharmatej127" class="project-link" target="_blank">View on GitHub →</a>
+      <a href="https://github.com/dharmatej127/Energy_bill_-prediction" class="project-link" target="_blank">View on GitHub →</a>
     </div>
   </div>
 </section>
@@ -1337,25 +1339,76 @@ function downloadResume(){
   window.open('Dharmatejvanamamaly.pdf', '_blank');
 }
 
-/* CONTACT FORM */
+/* CONTACT FORM (WEB3FORMS INTEGRATION) */
+// TODO: Replace this with your actual Web3Forms Access Key
+// Get a free key instantly from: https://web3forms.com/
+const WEB3FORMS_ACCESS_KEY = "e191d8dc-2a5e-4260-933f-774980f9107e"; 
+
 function sendMessage(){
-  const n=document.getElementById('cf-name').value.trim();
-  const e=document.getElementById('cf-email').value.trim();
-  const s=document.getElementById('cf-subject').value.trim();
-  const m=document.getElementById('cf-message').value.trim();
-  const st=document.getElementById('cf-status');
-  if(!n||!e||!m){
-    st.style.display='block';st.style.color='var(--coral)';
-    st.textContent='Please fill in all required fields.';return;
+  const n = document.getElementById('cf-name').value.trim();
+  const e = document.getElementById('cf-email').value.trim();
+  const s = document.getElementById('cf-subject').value.trim();
+  const m = document.getElementById('cf-message').value.trim();
+  const st = document.getElementById('cf-status');
+  const btn = document.querySelector('.btn-send');
+
+  if(!n || !e || !m){
+    st.style.display = 'block';
+    st.style.color = 'var(--coral)';
+    st.textContent = 'Please fill in all required fields.';
+    return;
   }
-  const mailto=`mailto:dharmatejvanamamaly@gmail.com?subject=${encodeURIComponent(s||'Portfolio Contact')}&body=${encodeURIComponent('From: '+n+' <'+e+'>\n\n'+m)}`;
-  window.location.href=mailto;
-  st.style.display='block';st.style.color='var(--sage)';
-  st.textContent='Opening your email client...';
-  document.getElementById('cf-name').value='';
-  document.getElementById('cf-email').value='';
-  document.getElementById('cf-subject').value='';
-  document.getElementById('cf-message').value='';
+
+  // Loading state
+  btn.disabled = true;
+  const originalBtnHTML = btn.innerHTML;
+  btn.innerHTML = `<span class="send-icon">⏳</span> Sending...`;
+  st.style.display = 'none';
+
+  // Send the email using Web3Forms API
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_ACCESS_KEY,
+      name: n,
+      email: e,
+      subject: s || 'Portfolio Contact Form',
+      message: m,
+    }),
+  })
+    .then(async (response) => {
+      let json = await response.json();
+      if (response.status == 200) {
+        st.style.display = 'block';
+        st.style.color = 'var(--sage)';
+        st.textContent = 'Thank you! Your message has been sent successfully.';
+        
+        // Clear input fields
+        document.getElementById('cf-name').value = '';
+        document.getElementById('cf-email').value = '';
+        document.getElementById('cf-subject').value = '';
+        document.getElementById('cf-message').value = '';
+      } else {
+        console.error('Web3Forms Error Status:', response.status, json);
+        st.style.display = 'block';
+        st.style.color = 'var(--coral)';
+        st.textContent = json.message || 'Oops! Failed to send message. Please check config or try again.';
+      }
+    })
+    .catch((error) => {
+      console.error('Web3Forms Error:', error);
+      st.style.display = 'block';
+      st.style.color = 'var(--coral)';
+      st.textContent = 'Oops! Failed to send message. Please check config or try again.';
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHTML;
+    });
 }
 
 /* LOADER */
